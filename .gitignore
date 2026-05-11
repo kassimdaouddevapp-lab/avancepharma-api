@@ -10,5 +10,4 @@ coverage/
 .DS_Store
 .vscode/settings.json
 apps/api/keys/
-setup-github.sh
-migrate-to-supabase.sh
+.supabase.env
