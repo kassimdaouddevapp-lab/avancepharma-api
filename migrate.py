@@ -106,6 +106,9 @@ def load_config():
         "SUPABASE_DB": os.getenv("SUPABASE_DB", "postgres"),
         "SUPABASE_USER": os.getenv("SUPABASE_USER", "postgres"),
         "SUPABASE_PASSWORD": os.getenv("SUPABASE_PASSWORD"),
+        "LOCAL_DB_USER": os.getenv("LOCAL_DB_USER", "avancepharma_user"),
+        "LOCAL_DB_PASSWORD": os.getenv("LOCAL_DB_PASSWORD", "avancepharma_pass"),
+        "LOCAL_DB_NAME": os.getenv("LOCAL_DB_NAME", "avancepharma"),
     }
     
     # Vérifier les valeurs obligatoires
@@ -195,13 +198,17 @@ def export_local_database():
         
         # Export
         print_info("Export de la base...")
+        local_user = os.getenv("LOCAL_DB_USER", "avancepharma_user")
+        local_password = os.getenv("LOCAL_DB_PASSWORD", "avancepharma_pass")
+        local_db = os.getenv("LOCAL_DB_NAME", "avancepharma")
+
         with open(dump_file, "w") as f:
             result = subprocess.run(
                 [
-                    "docker", "exec", container_id,
+                    "docker", "exec", "-e", f"PGPASSWORD={local_password}", container_id,
                     "pg_dump",
-                    "-U", "postgres",
-                    "-d", "avancepharma",
+                    "-U", local_user,
+                    "-d", local_db,
                     "--no-owner",
                     "--no-privileges",
                     "--clean",

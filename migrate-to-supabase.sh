@@ -50,6 +50,11 @@ fi
 SUPABASE_PORT=${SUPABASE_PORT:-5432}
 SUPABASE_DB=${SUPABASE_DB:-postgres}
 
+# Local PostgreSQL container credentials
+LOCAL_DB_USER=${LOCAL_DB_USER:-avancepharma_user}
+LOCAL_DB_PASSWORD=${LOCAL_DB_PASSWORD:-avancepharma_pass}
+LOCAL_DB_NAME=${LOCAL_DB_NAME:-avancepharma}
+
 # Vérifier si les outils sont installés
 command -v pg_dump >/dev/null 2>&1 || { echo "❌ pg_dump n'est pas installé. Installez PostgreSQL client."; exit 1; }
 command -v psql >/dev/null 2>&1 || { echo "❌ psql n'est pas installé. Installez PostgreSQL client."; exit 1; }
@@ -93,9 +98,9 @@ POSTGRES_CONTAINER=$(docker compose ps -q postgres 2>/dev/null || echo "avanceph
 
 # Export de la base locale
 echo "📦 Export depuis le conteneur Docker : $POSTGRES_CONTAINER"
-docker exec $POSTGRES_CONTAINER pg_dump \
-  -U postgres \
-  -d avancepharma \
+docker exec -e PGPASSWORD="$LOCAL_DB_PASSWORD" $POSTGRES_CONTAINER pg_dump \
+  -U "$LOCAL_DB_USER" \
+  -d "$LOCAL_DB_NAME" \
   --no-owner \
   --no-privileges \
   --clean \
