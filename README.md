@@ -123,21 +123,122 @@ NODE_ENV=development
 
 ## 🚀 Déploiement
 
-### Production
+### 🚀 Déploiement Automatique (Recommandé)
 
-1. **Base de données** : Supabase PostgreSQL
-2. **Backend** : Railway, Render, ou Vercel
-3. **Cache** : Redis Cloud ou Upstash
-4. **CI/CD** : GitHub Actions
+#### 1. Configuration GitHub Actions
+Les workflows CI/CD sont déjà configurés dans `.github/workflows/` :
+- **CI** : Tests automatiques à chaque push
+- **CD** : Déploiement automatique sur Railway
 
-### Configuration production
+#### 2. Configuration Railway
+```bash
+# 1. Créer un compte sur https://railway.app
+# 2. Connecter votre repo GitHub
+# 3. Railway détectera automatiquement railway.json et Dockerfile
+```
+
+#### 3. Configuration Supabase
+```bash
+# 1. Créer un projet sur https://supabase.com
+# 2. Récupérer les credentials de base de données
+# 3. Ajouter les variables dans Railway :
+   DB_HOST=your-supabase-host
+   DB_USERNAME=postgres
+   DB_PASSWORD=your-password
+   DB_DATABASE=postgres
+   DB_SSL=true
+```
+
+#### 4. Configuration Redis (Upstash)
+```bash
+# 1. Créer une base Redis sur https://upstash.com
+# 2. Récupérer l'URL de connexion
+# 3. Ajouter dans Railway :
+   REDIS_URL=your-upstash-url
+```
+
+#### 5. Générer et déployer les clés JWT
+```bash
+# Générer les clés localement
+npm run keys:generate
+
+# Les copier dans Railway (via interface web)
+# Ou utiliser Railway CLI pour les variables de fichiers
+```
+
+### 🐳 Déploiement Docker Manuel
+
+#### Railway (Recommandé)
+1. **Lier le repo GitHub** à Railway
+2. **Railway détecte automatiquement** `railway.json` et `Dockerfile`
+3. **Configurer les variables d'environnement** dans le dashboard Railway
+4. **Déploiement automatique** à chaque push sur main
+
+#### Render
+```bash
+# 1. Créer un service Web sur https://render.com
+# 2. Connecter votre repo GitHub
+# 3. Configuration :
+   - Runtime : Docker
+   - Dockerfile path : ./Dockerfile
+   - Port : 8080
+```
+
+#### Vercel
+```bash
+# Pour API routes uniquement
+vercel --prod
+```
+
+### 📊 Base de données
+
+#### Migration depuis local vers Supabase
+```bash
+# 1. Créer un projet Supabase
+# 2. Exécuter les migrations :
+npm run migration:run
+# 3. (Optionnel) Importer les données de test :
+pg_dump local_db | psql supabase_db
+```
+
+### 🔧 Variables d'environnement Production
 
 ```env
+# Application
 NODE_ENV=production
-DB_HOST=votre-host-supabase
-DB_URL=votre-connection-string-supabase
-REDIS_URL=votre-redis-url
+PORT=8080
+API_PREFIX=/api/v1
+
+# Base de données Supabase
+DB_HOST=your-project-ref.supabase.co
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=your-password
+DB_DATABASE=postgres
+DB_SSL=true
+DB_SSL_REJECT_UNAUTHORIZED=false
+
+# Redis Upstash
+REDIS_URL=rediss://your-upstash-url
+
+# JWT (les chemins sont relatifs au conteneur)
+JWT_PRIVATE_KEY_PATH=/app/keys/private.pem
+JWT_PUBLIC_KEY_PATH=/app/keys/public.pem
+JWT_ACCESS_TOKEN_EXPIRATION=15m
+JWT_REFRESH_TOKEN_EXPIRATION=7d
+
+# CORS
+CORS_ORIGIN=https://your-frontend-domain.com
+
+# Logging
+LOG_LEVEL=info
 ```
+
+### 📈 Monitoring & Analytics
+
+- **Railway** : Dashboard intégré avec logs et métriques
+- **Supabase** : Analytics SQL et monitoring base de données
+- **Upstash** : Monitoring Redis et analytics
 
 ## 📊 API Endpoints
 
