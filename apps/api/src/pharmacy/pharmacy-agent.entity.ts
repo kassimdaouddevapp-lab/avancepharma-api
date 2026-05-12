@@ -12,7 +12,7 @@ import { Pharmacy } from './pharmacy.entity';
 import { User } from '../users/user.entity';
 
 @Entity('pharmacy_agents')
-@Index(['user_id', 'pharmacy_id'], { unique: true })
+@Index(['userId', 'pharmacyId'], { unique: true })
 export class PharmacyAgent {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

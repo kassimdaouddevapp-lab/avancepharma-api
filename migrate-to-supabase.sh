@@ -126,6 +126,17 @@ PGPASSWORD=$SUPABASE_PASSWORD psql \
 if [ $? -eq 0 ]; then
     echo "✅ Migration vers Supabase réussie !"
     echo ""
+    echo "🔎 Vérification des tables importées dans Supabase..."
+    PGPASSWORD=$SUPABASE_PASSWORD psql -qAt \
+      -h $SUPABASE_HOST \
+      -p $SUPABASE_PORT \
+      -U $SUPABASE_USER \
+      -d $SUPABASE_DB \
+      -c "SELECT table_schema||'.'||table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog','information_schema') ORDER BY 1;" | sed 's/^/  /'
+    if [ $? -ne 0 ]; then
+      echo "⚠️ Impossible de lister les tables Supabase. Vérifiez la connexion ou les permissions."
+    fi
+    echo ""
     echo "🧹 Nettoyage..."
     rm $LOCAL_DUMP_FILE
     echo "✅ Fichier dump supprimé"

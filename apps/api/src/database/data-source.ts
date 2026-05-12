@@ -3,9 +3,10 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 
 // Load environment variables
-dotenv.config({ path: path.resolve(process.cwd(), 'apps/api/.env') });
+const envFilePath = path.resolve(__dirname, '../../.env');
+dotenv.config({ path: envFilePath });
 
-export const AppDataSource = new DataSource({
+const AppDataSource = new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT || '5432', 10),

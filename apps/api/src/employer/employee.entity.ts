@@ -14,7 +14,7 @@ import { User } from '../users/user.entity';
 import { EmployeeCap } from './employee-cap.entity';
 
 @Entity('employees')
-@Index(['employer_id', 'matricule'], { unique: true })
+@Index(['employerId', 'matricule'], { unique: true })
 export class Employee {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

@@ -10,7 +10,7 @@ import {
 import { PharmacyAgent } from './pharmacy-agent.entity';
 
 @Entity('pharmacies')
-@Index(['registration_number'], { unique: true, where: 'registration_number IS NOT NULL' })
+@Index(['registrationNumber'], { unique: true, where: 'registration_number IS NOT NULL' })
 export class Pharmacy {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

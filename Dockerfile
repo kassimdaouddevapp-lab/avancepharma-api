@@ -26,6 +26,15 @@ RUN npm run build --workspace=packages/shared
 # Build API
 RUN npm run build --workspace=apps/api
 
+# Generate JWT keys if not present
+RUN mkdir -p /app/apps/api/keys && \
+    if [ ! -f /app/apps/api/keys/private.pem ]; then \
+      openssl genrsa -out /app/apps/api/keys/private.pem 2048; \
+    fi && \
+    if [ ! -f /app/apps/api/keys/public.pem ]; then \
+      openssl rsa -in /app/apps/api/keys/private.pem -pubout -out /app/apps/api/keys/public.pem; \
+    fi
+
 # Production image
 FROM base AS runner
 WORKDIR /app
@@ -40,6 +49,9 @@ RUN adduser --system --uid 1001 nestjs
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages/shared/dist ./node_modules/@avancepharma/shared
+
+# Copy JWT keys
+COPY --from=builder /app/apps/api/keys ./keys
 
 USER nestjs
 
