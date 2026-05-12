@@ -7,10 +7,16 @@ export class RedisService {
   private redis: Redis;
 
   constructor(private configService: ConfigService) {
-    this.redis = new Redis({
-      host: this.configService.get<string>('REDIS_HOST', 'localhost'),
-      port: this.configService.get<number>('REDIS_PORT', 6379),
-    });
+    const redisUrl = this.configService.get<string>('REDIS_URL');
+    const redisHost = this.configService.get<string>('REDIS_HOST', 'localhost');
+    const redisPort = parseInt(this.configService.get<string>('REDIS_PORT', '6379'), 10);
+
+    this.redis = redisUrl
+      ? new Redis(redisUrl)
+      : new Redis({
+          host: redisHost,
+          port: redisPort,
+        });
 
     this.redis.on('error', (err) => {
       console.error('Redis error:', err);

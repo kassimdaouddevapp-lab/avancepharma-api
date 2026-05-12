@@ -4,8 +4,8 @@
   "scripts": {
     "build": "nest build",
     "dev": "nest start --watch",
-    "start": "node dist/main",
-    "start:prod": "node dist/main",
+    "start": "node dist/apps/api/src/main.js",
+    "start:prod": "node dist/apps/api/src/main.js",
     "lint": "tsc --noEmit",
     "test": "jest",
     "db:migrate": "typeorm-ts-node-commonjs migration:run -d src/database/data-source.ts",

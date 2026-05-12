@@ -12,7 +12,7 @@ COPY apps/api/package*.json ./apps/api/
 COPY packages/shared/package*.json ./packages/shared/
 
 # Install all dependencies (including devDependencies for build)
-RUN npm ci --omit=dev=false && npm cache clean --force
+RUN npm ci --include=dev && npm cache clean --force
 
 # Build the app
 FROM base AS builder
@@ -58,6 +58,6 @@ USER nestjs
 
 EXPOSE 8080
 
-ENV PORT 8080
+ENV PORT=8080
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/apps/api/src/main.js"]
