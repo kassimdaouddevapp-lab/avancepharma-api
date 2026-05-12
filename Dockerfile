@@ -12,7 +12,7 @@ COPY apps/api/package*.json ./apps/api/
 COPY packages/shared/package*.json ./packages/shared/
 
 # Install all dependencies (including devDependencies for build)
-RUN npm ci && npm cache clean --force
+RUN npm ci --omit=dev=false && npm cache clean --force
 
 # Build the app
 FROM base AS builder
